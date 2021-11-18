@@ -13,12 +13,22 @@ class Order
 
     public function calculateTotalSum()
     {
-        return array_sum($this->getItemsPrice()) * .2;
+        return array_sum($this->getItemsPrice());
     }
+
     public function getItemsPrice()
     {
+        foreach($this->items as $item)
+        {
+            $prices[] = $item + ($item * ($this->getDetails()['tax']) / 100) - ($item * ($this->getDetails()['discount']) / 100); 
+        }
         // get price from items
-        return [10,20,54];
+        return $prices;
+    }
+
+    public function getDetails()
+    {
+        return ['tax' => 9, 'discount' => 40];
     }
 
     public function output()
@@ -66,7 +76,7 @@ class OrderRepository
     {
     }
 }
-$order = new Order(['item1' , 'item2'],new JsonOutput());
+$order = new Order(['item1' => 100000 , 'item2' => 350000],new JsonOutput());
 
 $orderRepo = new OrderRepository();
 $orderRepo->save($order);
